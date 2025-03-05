@@ -376,6 +376,8 @@ Finalmente, el modelo relacional y el diagrama de clases reflejan la estructura 
 
 ![Home](https://github.com/Fabian0611/Project_POO/blob/main/Interfaz_home.jpg?raw=true)
 
+![Página registro de vehículo](https://github.com/Fabian0611/Project_POO/blob/main/Registro_de_veh%C3%ADculo.jpg?raw=true)
+
 
 
 
