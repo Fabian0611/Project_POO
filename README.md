@@ -372,5 +372,12 @@ Para la gestión del parqueadero, se desarrollaron funcionalidades clave, como l
 
 Finalmente, el modelo relacional y el diagrama de clases reflejan la estructura del sistema, evidenciando la correcta integración entre los distintos módulos y garantizando su escalabilidad y mantenimiento a futuro.
 
+# View
+
+![Home](https://raw.githubusercontent.com/usuario/repositorio/rama/ruta/imagen.jpg)
+
+
+
+
 
 
