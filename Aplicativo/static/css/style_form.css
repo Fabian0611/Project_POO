@@ -1,0 +1,85 @@
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background: linear-gradient(125deg, #000000, #4e4e4e, #a8a8a8);
+    background-size: 400% 400%;
+    animation: backgroundAnimation 10s infinite alternate;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+.form-container {
+    background: #4e4e4e;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 10px 10px 20px #afaeae, -10px -10px 20px #636363;
+    width: 100%;
+    max-width: 400px;
+}
+.form-label {
+    font-weight: bold;
+}
+.form-control {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+}
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+.btn-success {
+    background: #33a064;
+    box-shadow: inset 5px 5px 10px #247549, inset -5px -5px 10px #247549;
+    font-weight: bold;
+    color: black;
+    border: none;
+    transition: 1.5s;
+}
+.btn-success:hover {
+    background: #21c71bee;
+    box-shadow: 8px 8px 16px #3a3a3a, -8px -8px 16px #424242;
+    font-weight: bold;
+    color: #000000;
+}
+/* Flecha de regreso */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #a0a0a0;
+    box-shadow: inset 5px 5px 10px #757575, inset -5px -5px 10px #636363;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 1s ease-in-out;
+}
+.back-button:hover {
+    background: #414040;
+    box-shadow: 8px 8px 16px #3a3a3a, -8px -8px 16px #424242;
+}
+.back-button img {
+    width: 30px;
+    height: 30px;
+}
+
+.icono {
+    width: 80px;
+    height: 80px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+input[type=radio]{
+    width: 25px;
+    height: 25px;
+}
+@keyframes backgroundAnimation {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}

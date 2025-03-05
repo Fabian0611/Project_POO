@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Vehículo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_form.css')}}">
+</head>
+<body>
+
+    <!-- Botón para regresar -->
+    <a href="{{ url_for('home') }}" class="back-button">
+        <img src="{{ url_for('static', filename='images/Back_arrow.png') }}" alt="Regresar">
+    </a>
+
+    <div class="toast-container">
+      <div id="notificationToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body" id="toastMessage"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-container text-center">
+      <h2>Registro de Vehículo</h2>
+        
+        {% if registrado == True and propietario_existente == True %}
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            let toastEl = document.getElementById("notificationToast");
+            let toastMessage = document.getElementById("toastMessage");
+            toastMessage.textContent = "¡Vehículo registrado con éxito!";
+            let toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            });
+          </script>
+        {% elif propietario_existente == False %}
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            let toastEl = document.getElementById("notificationToast");
+            let toastMessage = document.getElementById("toastMessage");
+            toastMessage.textContent = "¡El propietario no existe, por favor ingrese el propietario en registro propietario!";
+            toastEl.classList.replace("bg-success", "bg-warning");
+            let toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            });
+          </script>
+        {% elif registrado == False %}
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            let toastEl = document.getElementById("notificationToast");
+            let toastMessage = document.getElementById("toastMessage");
+            toastMessage.textContent = "El vehículo ya está registrado.";
+            toastEl.classList.replace("bg-success", "bg-danger");
+            let toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            });
+          </script>
+        {% endif %}
+        
+        <form action="{{ url_for('registrar_vehiculo') }}" method="POST" class="mt-4">
+          <div class="mb-3 text-start">
+            <input type="radio" id="tipo" name="tipo" value="Carro" required/>
+            <img class="icono" src="{{ url_for('static', filename='images/Car.png')}}" alt="Car">
+            <label for="tipo">Carro</label>
+            <br>
+          
+            <input type="radio" id="tipo" name="tipo" value="Moto" required/>
+            <img class="icono" src="{{ url_for('static', filename='images/Moto.png')}}" alt="Moto">
+            <label for="tipo">Moto</label>
+            <br>
+          
+            <input type="radio" id="tipo" name="tipo" value="Bici" required/>
+            <img class="icono" src="{{ url_for('static', filename='images/Bicycle.png')}}" alt="Bicycle">
+            <label for="tipo">Bici</label>
+            <br>
+          </div>
+          
+            <div class="mb-3 text-start">
+              <label for="placa" class="form-label">Placa</label>
+              <input type="text" class="form-control" id="placa" name="placa" required>
+            </div>
+            <div class="mb-3 text-start">
+              <label for="propietario" class="form-label">ID Propietario</label>
+              <input type="text" class="form-control" id="propietario" name="propietario" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Registrar</button>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_home.css') }}">
+  </head>
+  <body>
+  <div class="container-principal">
+      <div class="container-header">
+        <h1>🅿🚘 ¡Bienvenido al Sistema de Parqueadero! 🚘🅿</h1>
+        <p>Este sistema le permite registrar propietarios y vehículos de manera eficiente, garantizando un control adecuado de los espacios de estacionamiento.
+        </p>
+      </div>
+      <div class="container-grid">
+          <a href="{{url_for('registrar_propietario') }}">
+            <div class="container">
+                <img src="{{url_for('static', filename='images/Usuario.png')}}" alt="Usuario">
+                <p>Registrar Usuario</p>
+            </div>
+          </a>
+          <a href="{{url_for('registrar_vehiculo') }}">
+            <div class="container">
+              <img src="{{url_for('static', filename='images/Vehiculo.png')}}" alt="Vehículo">
+              <p>Registrar Vehículo</p>
+            </div>
+          </a>
+          <a href="{{ url_for('mostrar_espacios') }}">
+          <div class="container">
+              <img src="{{url_for('static', filename='images/Parking-lot.png')}}" alt="Parking"><p>Ocupar Espacio</p>
+          </div>
+        </a>
+      </div>
+  </div>
+  </body>

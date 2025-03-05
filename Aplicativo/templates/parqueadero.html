@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parqueadero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(145deg, #a8a8a8, #000000);
+            color: #eceaea;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #a0a0a0;
+            box-shadow: inset 3px 3px 6px #757575, inset -3px -3px 6px #636363;
+            border-radius: 50%;
+            width: 50px;  /* Ajusta el tamaño del botón */
+            height: 50px; /* Ajusta el tamaño del botón */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .back-button img {
+            width: 80%; /* Ajusta el tamaño de la imagen dentro del botón */
+            height: auto;
+        }
+
+        .btn {
+            border-radius: 10px;
+            font-size: 1.2em;
+        }
+        .btn-success {
+            background-color: #5cd65c !important;
+            border-color: #5cd65c !important;
+        }
+        .btn-success:hover {
+            background-color: #4caf50 !important;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #a8a8a8, #000000);
+            color: #eceaea;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón para regresar -->
+    <div class="container">
+    <a href="{{ url_for('home') }}" class="back-button">
+        <img src="{{ url_for('static', filename='images/Back_arrow.png') }}" alt="Regresar">
+    </a>
+    </div>
+
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Estado del Parqueadero</h1>
+        
+        <h2 class="text-center">Sección Carros</h2>
+        <div class="row justify-content-center" id="seccionCarros"></div>
+        
+        <h2 class="text-center mt-4">Sección Motos</h2>
+        <div class="row justify-content-center" id="seccionMotos"></div>
+        
+        <h2 class="text-center mt-4">Sección Bicis</h2>
+        <div class="row justify-content-center" id="seccionBicis"></div>
+    </div>
+
+
+    <!-- Modal para ocupar espacio -->
+    <div class="modal fade" id="modalOcupar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ocupar Espacio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="ocupacion-id">
+                    <label for="placa">Placa del Vehículo:</label>
+                    <input type="text" id="placa" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btnOcupar">Ocupar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para liberar espacio -->
+    <div class="modal fade" id="modalLiberar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Liberar Espacio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Desea liberar este espacio de parqueo?</p>
+                    <label for="inputPlaca" class="form-label">Ingrese la placa del vehículo:</label>
+                    <input type="text" id="inputPlaca" class="form-control" placeholder="Ej: ABC-123">
+                    <input type="hidden" id="liberacion-id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btnLiberar">Liberar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar tarifa -->
+    <div class="modal fade" id="modalTarifa" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Salida</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <h4>Información de Salida</h4>
+                        <p><strong>Placa:</strong> <span id="tarifaPlaca"></span></p>
+                        <p><strong>Tiempo Total:</strong> <span id="tarifaTiempo"></span></p>
+                        <p><strong>Tarifa Total:</strong> <span id="tarifaValor"></span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 text-start">
+        <a href="/exportar_historial" download="historial.csv">
+            <button id="descargarCSV" class="btn btn-download">Descargar Historial CSV</button>
+        </a>
+    </div>
+
+    <script>
+        function cargarEspacios() {
+            $.get('/espacios', function(data) {
+                $('#seccionCarros, #seccionMotos, #seccionBicis').empty();
+                
+                data.espacios.forEach(espacio => {
+                    let color = espacio.estado === 'ocupado' ? 'btn-danger' : 'btn-success';
+                    let seccion = "";
+
+                    if (espacio.tipo === 'Carro') {
+                        seccion = "#seccionCarros";
+                    } else if (espacio.tipo === 'Moto') {
+                        seccion = "#seccionMotos";
+                    } else if (espacio.tipo === 'Bici') {
+                        seccion = "#seccionBicis";
+                    }
+
+                    let boton = `<button class="btn ${color} m-2" 
+                                        style="width: 100px; height: 100px; font-weight: bold;" 
+                                        onclick="manejarClick(${espacio.id_espacio}, '${espacio.estado}', '${espacio.placa}')">
+                                    ${espacio.id_espacio}
+                                </button>`;
+                    
+                    if (seccion) {
+                        $(seccion).append(`<div class="col-auto">${boton}</div>`);
+                    }
+                });
+            }).fail(function(error) {
+                console.error("Error al obtener los espacios:", error.responseText);
+                alert("Error al cargar los espacios. Intente nuevamente.");
+            });
+        }
+
+        $(document).ready(function() {
+            cargarEspacios();
+        });
+
+        function manejarClick(id, estado, placa, tipo) {
+            if (estado === 'libre') {
+                $('#ocupacion-id').val(id);
+                $('#modalOcupar').modal('show');
+
+                // Agregar un input hidden con el tipo de vehículo
+                $("#modalOcupar .modal-body").append(`<input type="hidden" id="tipo-vehiculo" value="${tipo}">`);
+            } else {
+                $('#liberacion-id').val(id);
+                $('#liberacion-placa').val(placa);
+                $('#modalLiberar').modal('show');
+            }
+        }
+
+        $('#btnOcupar').click(function() {
+            let id_espacio = $('#ocupacion-id').val();
+            let placa = $('#placa').val().trim();
+            let tipo_vehiculo = $('#tipo-vehiculo').val(); // Asegúrate de tener este input en el HTML
+
+            if (!placa) {
+                alert("Debe ingresar una placa válida.");
+                return;
+            }
+
+            if (!tipo_vehiculo) {
+                alert("Debe seleccionar un tipo de vehículo.");
+                return;
+            }
+
+            $.ajax({
+                url: '/ocupar_espacio',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id_espacio, placa, tipo_vehiculo }),
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalOcupar').modal('hide');
+                        cargarEspacios();
+                    } else {
+                        alert("Error: " + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    let errorMsg = "Error al ocupar el espacio.";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMsg = xhr.responseJSON.error;
+                    }
+                    alert(errorMsg);
+                }
+            });
+        });
+
+
+        $('#btnLiberar').click(function() {
+            let id_espacio = $('#liberacion-id').val();
+            let placa = $('#inputPlaca').val().trim();
+            
+            if (!placa) {
+                alert("Error: Debe ingresar la placa del vehículo.");
+                return;
+            }
+
+            console.log("Liberando espacio:", id_espacio, "Placa:", placa);
+
+            $.ajax({
+                url: '/liberar_espacio',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ id_espacio, placa }),
+                success: function(response) {
+                    console.log("Respuesta del servidor:", response);
+                    if (response.success) {
+                        $('#modalLiberar').modal('hide');
+                        
+                        // Mostrar modal de tarifa
+                        $('#tarifaPlaca').text(response.placa);
+                        $('#tarifaTiempo').text(formatearTiempo(response.tiempo_total));
+                        $('#tarifaValor').text('$' + response.tarifa.toFixed(2));
+                        $('#modalTarifa').modal('show');
+                        
+                        cargarEspacios();
+                    } else {
+                        alert("Error: " + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error en la solicitud:", xhr.responseText);
+                    alert("Error al liberar el espacio: " + xhr.responseText);
+                }
+            });
+        });
+
+        function formatearTiempo(tiempo) {
+            const horas = tiempo.horas > 0 ? `${tiempo.horas} hora(s)` : '';
+            const minutos = tiempo.minutos > 0 ? `${tiempo.minutos} minuto(s)` : '';
+            const segundos = tiempo.segundos > 0 ? `${tiempo.segundos} segundo(s)` : '';
+            return `${horas} ${minutos} ${segundos}`.trim();
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
