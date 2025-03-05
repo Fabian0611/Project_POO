@@ -12,13 +12,9 @@
 - [Problema](#problema)
 - [Solución](#solución)
 - [Diagramas de Clase](#diagramas-de-clase)
-  - [Propietario](#propietario)
-  - [Vehiculo](#vehiculo)
-  - [BaseDeDatos](#basededatos)
-  - [HorasEnElParqueadero](#horasenelparqueadero)
-  - [Tarifa](#tarifa)
-  - [Parqueadero](#parqueadero)
-  - [ManejadorDatosVehiculo](#manejadordatosvehiculo)
+  - [PropietarioDB](#propietarioDB)
+  - [VehiculoDB](#vehiculoDB)
+  - [ParqueaderoDB](#parqueaderoDB)
 - [Resultados Parciales](#resultados-parciales)
 - 
 ## Introducción
@@ -163,134 +159,218 @@ classDiagram
     VehiculoDB --|> ConnectorDB
     VehiculoDB o-- PropietarioDB : Tienen un
     PropietarioDB --|> ConnectorDB
+```
 
 
-### `Propietario`
+### `PropietarioDB`
 Esta clase se usa para instanciar diferentes datos del propietario, ademas de contar con sus diferentes setters and getters, ademas de una funcion que nos devuelve todos estos datos recopilados en un diccionario
 ``` mermaid
 classDiagram
-   class propietario{
-    + str Identificación
-    + str Nombre 
-    + str Telefono
-    + str Correo
-    + Obeter_contacto(self): dict 
-    + get_id_propietario(self): str
-    + get_telefono(self):str 
-    + get_correo (self):str
-    + set_id_propietario(self): str
-    + set_telefono(self):str 
-    + set_correo (self):str
+class PropietarioDB {
+        - int _id_propietario
+        - str _nombre
+        - str _telefono
+        - str _correo
+        + PropietarioDB(identificacion, nombre, telefono, correo, host, user, password, database)
+        + id_propietario: int
+        + nombre: str
+        + telefono: str
+        + correo: str
+        + agregar_propietario()
+        + obtener_propietario_por_id()
+        + actualizar_propietario()
+        + eliminar_propietario(id_propietario)
+        + obtener_propietarios()
+        + cerrar_conexion()
     }
 ```
-### `Vehiculo`
-Esta clase se utiliza para crear diferentes vehículos, aprovechando las características que los diferencian, como su placa o su propietario. Además, incluye métodos para acceder a información privada, como los datos del usuario
+### `VehiculoDB`
+Esta clase se utiliza para crear diferentes vehículos, aprovechando las características que los diferencian, como su placa o su propietario. Además, incluye métodos para acceder a información privada, como los datos del usuario.
+
 ``` mermaid
 classDiagram
-    class Vehiculo {
-        + Str placa
-        + Str tipo
-        + Propietario propietario
-        + obtenerInformacion(self, propietario):dict 
-        + get_placa(self) : str
-        + get_tipo(self) : str
-        + get_ propietario (self): propietario
-        + set_ placa (self, placa : str): placa 
-        + set_tipo (self, tipo: str): tipo
-        + set_propietario (self. propietario:"Propietario"): propietario
-        
-    }
-
-    class Moto {
-        +  Str placa
-        + Str tipo
-        + Propietario propietario
-
-    }
-
-    class Carro {
-        + Str placa
-        + Str tipo
-        + Propietario propietario
-
-    }
-    class Bicicleta{
-        +  Str placa
-        + Str tipo
-        + Propietario propietario
+class VehiculoDB {
+        - str _placa
+        - str _tipo
+        - int _propietario
+        + VehiculoDB(placa, tipo, propietario, host, user, password, database)
+        + placa: str
+        + tipo: str
+        + propietario: int
+        + agregar_vehiculo()
+        + obtener_vehiculo_por_placa()
+        + actualizar_vehiculo()
+        + eliminar_vehiculo()
+        + obtener_vehiculos()
+        + cerrar_conexion()
     }
 
 
-
-    Vehiculo  <|-- Bicicleta
-    Vehiculo <|-- Moto
-    Vehiculo <|-- Carro
+    VehiculoDB  <|-- Bicicleta
+    VehiculoDB <|-- Moto
+    VehiculoDB <|-- Carro
 ```
-
-### `BaseDeDatos`
-La clase `BaseDeDatos` genera un archivo json donde se guardan la informacion de los propietarios, vehiculos y uso del parqueadero.
-```mermaid
-classDiagram
-    class BaseDatos{
-        +chain archivo
-        +dict __propietarios
-        +List __vehiculos
-        +List __historial
-        +
-        +__cargar_datos(self)
-        +agregar_propietario(self, propietario:"Propietario")
-        +agregar_vehiculo(self, vehiculo)
-        +agregar_historial(self, placa, hora_entrada, hora_salida, tarifa)
-        +generar_json(self)
-}
-```
-### `HorasEnElParqueadero`
+### `ConectorDB`
 Esta clase calcula el tiempo que estuvo el vehiculo en el parqueadero.
 ``` mermaid
 classDiagram
-    class HorasEnElParqueadero{
-        +hora_entrada
-        +hora_salida
-        +calcular_tiempo_en_segundos(self)
+class ConnectorDB {
+        - str host
+        - str user
+        - str password
+        - str database
+        - connection
+        - cursor
+        + ConnectorDB(host, user, password, database)
+        + connect()
     }
 ```
-### `Tarifa`
+### `HistorialDB`
 Esta clase utiliza datetime para calcular el tiempo que un vehículo permanece en el parqueadero. Posteriormente, multiplica el tiempo, dado en segundos, por la tarifa correspondiente a cada clase de vehículo.
 ``` mermaid
 classDiagram
-    class Tarifa{
-        +tipo_vehiculo
-        +segundos
-        +calcular_tarifa(self)
+class HistorialDB {
+        - str _placa
+        - int _id_espacio
+        - str _hora_entrada
+        - str _hora_salida
+        - float _tarifa
+        + HistorialDB(placa, id_espacio, hora_entrada, hora_salida, tarifa, host, user, password, database)
+        + placa: str
+        + id_espacio: int
+        + hora_entrada: str
+        + hora_salida: str
+        + tarifa: float
+        + agregar_historial()
+        + obtener_historial_por_placa()
+        + obtener_todo_el_historial()
+        + actualizar_historial_salida(hora_salida, tarifa)
+        + cerrar_conexion()
     }
+
 ```
-### `Parqueadero`
+### `ParqueaderoDB`
 Esta clase genera una matriz que contiene información sobre el estado de cada espacio.
 ``` mermaid
 classDiagram
-    class Parqueadero{
-        +filas_carros
-        +columnas_carros
-        +filas_motos
-        +columnas_motos
-        +filas_bicis
-        +columnas_bicis
-        +ocupar_espacio(self, tipo, fila, columna, placa, hora)
-        +liberar_espacio(self, tipo, columna, hora_salida): dict
-        +mostar_parqueadero(self)
-        +mostar_matriz(self, matriz)
+class ParqueaderoDB {
+        - int _id_espacio
+        - str _tipo
+        - str _placa
+        - str _estado
+        + ParqueaderoDB(id_espacio, tipo, placa, estado, host, user, password, database)
+        + id_espacio: int
+        + tipo: str
+        + placa: str
+        + estado: str
+        + crear_espacios(cantidad, tipo)
+        + ocupar_espacio()
+        + desocupar_espacio()
+        + obtener_espacios()
+        + obtener_espacio_por_placa()
+        + obtener_espacios_libres()
+        + cerrar_conexion()
     }
 ```
-### `ManejadorDatosVehiculo`
-Genera un csv con el reporte de todos ls movimientos que se han realizado en el parqueadero.
+#CONTROLLER
+
 ``` mermaid
 classDiagram
-    class ManejadorDatosVehiculos{
-        +archivo_json
-        +generar_csv(self, archivo_salida)
-        +generar_cadena(self)
+    class HomeController {
+        +Flask app
+        +home() : render_template
     }
-```
 
-## Resultados Parciales
-El código es capaz de generar una matriz que simula un parqueadero, consultar el estado de cada celda y, con base en la ocupación, asignar un espacio a cada usuario. Además, calcula la tarifa de cada usuario en función del tiempo que estuvo en el parqueadero y el tipo de vehículo que utiliza.
+    class PropietarioController {
+        +Flask app
+        +registrar_propietario() : render_template
+    }
+
+    class VehiculoController {
+        +Flask app
+        +registrar_vehiculo() : render_template
+    }
+
+    class ParqueaderoController {
+        +Flask app
+        +mostrar_espacios() : render_template
+        +obtener_espacios() : jsonify
+        +ocupar_espacio() : jsonify
+        +liberar_espacio() : jsonify
+        +calcular_tarifa(hora_entrada, hora_salida) : float
+    }
+
+    class ExportarHistorialCSV {
+        +HistorialDB historial_db
+        +generar_csv(nombre_archivo) : void
+    }
+
+    class PropietarioDB {
+        +identificacion: str
+        +nombre: str
+        +telefono: str
+        +correo: str
+        +agregar_propietario() : void
+        +obtener_propietario_por_id() : PropietarioDB
+        +cerrar_conexion() : void
+    }
+
+    class VehiculoDB {
+        +placa: str
+        +tipo: str
+        +propietario_id: str
+        +agregar_vehiculo() : void
+        +obtener_vehiculo_por_placa() : VehiculoDB
+        +cerrar_conexion() : void
+    }
+
+    class ParqueaderoDB {
+        +id_espacio: int
+        +tipo: str
+        +placa: str
+        +estado: str
+        +obtener_espacios() : list
+        +ocupar_espacio() : void
+        +desocupar_espacio() : void
+        +cerrar_conexion() : void
+    }
+
+    class HistorialDB {
+        +placa: str
+        +id_espacio: int
+        +hora_entrada: datetime
+        +hora_salida: datetime
+        +tarifa: float
+        +agregar_historial() : void
+        +obtener_historial_por_placa() : list
+        +actualizar_historial_salida(hora_salida, tarifa) : void
+        +obtener_todo_el_historial() : list
+        +cerrar_conexion() : void
+    }
+
+    HomeController --> Flask
+    PropietarioController --> Flask
+    VehiculoController --> Flask
+    ParqueaderoController --> Flask
+    ExportarHistorialCSV --> HistorialDB
+    PropietarioController --> PropietarioDB
+    VehiculoController --> VehiculoDB
+    ParqueaderoController --> ParqueaderoDB
+    ParqueaderoController --> HistorialDB
+    HistorialDB --> ParqueaderoDB
+    HistorialDB --> VehiculoDB
+    VehiculoDB --> PropietarioDB
+``` 
+
+## Resultado
+
+El desarrollo del sistema de gestión de parqueaderos dio como resultado una aplicación web funcional que permite la administración eficiente de los espacios de estacionamiento. Se implementaron diversas interfaces que facilitan la interacción del usuario, incluyendo pantallas para el registro de propietarios y vehículos, la visualización de espacios disponibles y el control del historial de uso del parqueadero.
+
+En cuanto al almacenamiento de datos, se lograron registrar propietarios con información detallada (nombre, identificación, contacto), así como vehículos asociados a cada usuario. Además, el sistema almacena el historial de entradas y salidas de los vehículos, calculando automáticamente la tarifa correspondiente en función del tiempo de uso.
+
+Para la gestión del parqueadero, se desarrollaron funcionalidades clave, como la ocupación y liberación de espacios en tiempo real, con respuestas inmediatas a través de la API. Asimismo, se implementó la opción de exportar el historial en formato CSV, facilitando la consulta y análisis de datos.
+
+Finalmente, el modelo relacional y el diagrama de clases reflejan la estructura del sistema, evidenciando la correcta integración entre los distintos módulos y garantizando su escalabilidad y mantenimiento a futuro.
+
+
+
