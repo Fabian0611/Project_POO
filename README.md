@@ -378,13 +378,13 @@ Finalmente, el modelo relacional y el diagrama de clases reflejan la estructura 
 
 ![Página registro de vehículo](https://github.com/Fabian0611/Project_POO/blob/main/Registro_de_veh%C3%ADculo.jpg?raw=true)
 
-## RECURSOS USADOS
+# RECURSOS USADOS
 
-# Flask
+### Flask
 Es un framework web en Python que usamos para desarrollar la API del sistema de gestión de parqueaderos. Nos permitió manejar solicitudes HTTP, conectar la base de datos y facilitar la comunicación entre la interfaz y la lógica del sistema.
-# MySQL 
+### MySQL 
 Fue utilizado como el sistema de gestión de bases de datos para almacenar y administrar la información del parqueadero. Su uso permitió manejar grandes volúmenes de datos de manera estructurada y eficiente.
-# CVS
+### CVS
 El formato CSV se utilizó para exportar y almacenar registros históricos de manera simple y accesible.
 Funciones clave:
 Generación de reportes: Permitió exportar el historial de parqueo en un formato compatible con herramientas externas como Excel.
