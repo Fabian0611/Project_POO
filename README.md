@@ -250,7 +250,7 @@ class HistorialDB {
 
 ```
 ### `ParqueaderoDB`
-Esta clase genera una matriz que contiene información sobre el estado de cada espacio.
+Esta clase genera atributos que contiene información sobre el estado de cada espacio.
 ``` mermaid
 classDiagram
 class ParqueaderoDB {
@@ -272,7 +272,7 @@ class ParqueaderoDB {
         + cerrar_conexion()
     }
 ```
-#CONTROLLER
+# CONTROLLER
 
 ``` mermaid
 classDiagram
