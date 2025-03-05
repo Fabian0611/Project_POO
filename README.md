@@ -35,6 +35,7 @@ Desarrollar un sistema inteligente de gestión de parqueaderos que permita monit
 
 ## Diagramas de Clase
 ``` mermaid
+
 classDiagram
 
  class ConnectorDB {
