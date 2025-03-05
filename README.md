@@ -374,7 +374,7 @@ Finalmente, el modelo relacional y el diagrama de clases reflejan la estructura 
 
 # View
 
-![Home](https://raw.githubusercontent.com/usuario/repositorio/rama/ruta/imagen.jpg)
+![Home](https://github.com/Fabian0611/Project_POO/blob/main/Interfaz_home.jpg?raw=true)
 
 
 
